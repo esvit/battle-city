@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>The Game: Putin Caput</title>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CFV0FS1H2D"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-CFV0FS1H2D');
+  </script>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="The Game: Putin Caput">
+  <meta property="og:description" content="Реінкарнація культової гри 90-х років. Слава Україні!">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="/putin-caput/assets/images/preview.png">
+  <meta name="theme-color" content="#000">
+  <style>
+      * {
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          -khtml-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+      }
+    body {
+        padding: 0;
+        margin: 0;
+        background: #000;
+        overflow: hidden;
+        position: relative;
+        min-height: 100vh;
+    }
+    #main {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 0;
+    }
+    .comeback {
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 20px;
+        background-image: url(assets/images/donate.png);
+        background-size: 144px 60px;
+        width: 144px;
+        height: 60px;
+        z-index: 3;
+    }
+    .youtube {
+        font-family: 'Press Start 2P', sans-serif;
+        position: absolute;
+        bottom: 0;
+        padding-left: 25px;
+        white-space: nowrap;
+        left: 50%;
+        font-size: 12px;
+        height: 23px;
+        line-height: 17px;
+        text-decoration: none;
+        transform: translateX(-50%);
+        color: #fff;
+        background-image: url(assets/images/youtube.png);
+        background-repeat: no-repeat;
+        background-size: 21px 16px;
+        z-index: 2;
+    }
+    #jContainer1 {
+        display: none;
+        position: absolute;
+        left: 0;
+        bottom: 70px;
+        width: 150px;
+        height: 150px;
+        z-index: 1;
+    }
+    #jContainer2 {
+        display: none;
+        position: absolute;
+        right: 0;
+        bottom: 70px;
+        width: 150px;
+        height: 150px;
+        z-index: 1;
+    }
+    @media only screen and (max-device-width: 768px){
+        #jContainer1, #jContainer2 {
+            display: block;
+        }
+    }
+  </style>
+  <link rel="preload" as="image" href="assets/images/sprites2.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<a href="https://www.comebackalive.in.ua/donate" target="_blank" class="comeback" onclick="gtag('event', 'donate_banner', {});"></a>
+<a href="https://www.youtube.com/channel/UCCLMfwyCtaxqVtLJRplKFPA?sub_confirmation=1" target="_blank" class="youtube" onclick="gtag('event', 'youtube_banner', {});">Підписатись на youtube-канал</a>
+
+<div id="jContainer1"></div>
+<div id="jContainer2"></div>
+<canvas id="main"></canvas>
+
+<audio id="audio_idle"><source src="assets/sounds/idle.mp3"></audio>
+<audio id="audio_move"><source src="assets/sounds/move.mp3"></audio>
+<audio id="audio_shoot"><source src="assets/sounds/shoot.mp3"></audio>
+<audio id="audio_explosion"><source src="assets/sounds/explosion.mp3"></audio>
+<audio id="audio_hit"><source src="assets/sounds/be_hit.mp3"></audio>
+<audio id="audio_start"><source src="assets/sounds/start.mp3"></audio>
+<audio id="audio_level_up"><source src="assets/sounds/level_up.ogg"></audio>
+<audio id="audio_collect"><source src="assets/sounds/collect.mp3"></audio>
+<audio id="audio_bomb"><source src="assets/sounds/bomb.mp3"></audio>
+<audio id="audio_wall"><source src="assets/sounds/wall.mp3"></audio>
+<audio id="audio_score"><source src="assets/sounds/score.mp3"></audio>
+<audio id="audio_victory"><source src="assets/sounds/victory.mp3"></audio>
+<audio id="audio_game_over"><source src="assets/sounds/game_over.ogg"></audio>
+<audio id="audio_pick"><source src="assets/sounds/pick.ogg"></audio>
+
+<script src="assets/js/DependencyInjection.js"></script>
+<script type="module">
+  import GameMap from './assets/js/gameObjects/GameMap.js';
+  import GameSidebar from './assets/js/gameObjects/GameSidebar.js';
+  import ConstructorSidebar from './assets/js/gameObjects/ConstructorSidebar.js';
+  import DrawingContext from './assets/js/DrawingContext.js';
+  import ResourceManager from './assets/js/ResourceManager.js';
+  import InputManager from './assets/js/InputManager.js';
+  import SceneManager from './assets/js/SceneManager.js';
+  import MenuScene from './assets/js/scenes/MenuScene.js';
+  import GameScene from './assets/js/scenes/GameScene.js';
+  import ScoresScene from './assets/js/scenes/ScoresScene.js';
+  import VictoryScene from './assets/js/scenes/VictoryScene.js';
+  import ConstructorScene from './assets/js/scenes/ConstructorScene.js';
+  import Sounds from './assets/js/Sounds.js';
+  import GameState from './assets/js/GameState.js';
+  import Translation from './assets/js/Translation.js';
+
+  async function bootstrap() {
+    const di = DependencyInjection.createRoot({
+      DrawingContext,
+      ResourceManager,
+      InputManager,
+      GameMap,
+      GameSidebar,
+      ConstructorSidebar,
+      Sounds,
+      Translation,
+      GameState
+    });
+    di.set('canvas', document.getElementById('main'));
+
+    const sceneManager = di.get(SceneManager);
+    di.set('MenuScene', di.get(MenuScene));
+    di.set('GameScene', di.get(GameScene));
+    di.set('ScoresScene', di.get(ScoresScene));
+    di.set('VictoryScene', di.get(VictoryScene));
+    di.set('ConstructorScene', di.get(ConstructorScene));
+
+    sceneManager.loadScene(di.get('MenuScene'));
+    // sceneManager.loadScene(gameScene);
+
+    window.map = di.get('GameMap');
+
+    sceneManager.start();
+  }
+  bootstrap();
+
+</script>
+</body>
+</html>

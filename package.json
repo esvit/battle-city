@@ -1,0 +1,19 @@
+{
+  "name": "game-battle-city",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --harmony --experimental-modules server/index.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/esvit/battle-city.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/esvit/battle-city/issues"
+  },
+  "homepage": "https://github.com/esvit/battle-city#readme"
+}
